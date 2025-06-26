@@ -1,0 +1,1631 @@
+{
+  "name": "Google Mail Calendario",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2cfc935f-f58f-4d60-829e-2b6ea254845a",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tqWHrqvymdXTvqST",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.subject }}\n{{ $json.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Trabajo",
+              "description": "El correo no es spam, se relaciona con trabajo, no relacionado con algo personal, viaje o conferencia"
+            },
+            {
+              "category": "Personal",
+              "description": "El correo no es spam, contiene un mensaje personal, no relacionado al trabajo, viaje o conferencia"
+            },
+            {
+              "category": "Evento",
+              "description": "El correo parece ser relacionado a viajes, eventos, cursos, conferencias"
+            },
+            {
+              "category": "Otros",
+              "description": "Si el correo no pertenece a ninguna de las otras categorias"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "ac1d6542-0e12-4437-bf92-783d37d154f3",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_1307246601421398620"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        620,
+        -180
+      ],
+      "id": "eb7f15ba-2428-4662-99f6-4405ac714b9a",
+      "name": "Gmail",
+      "webhookId": "e3849ba0-a6ee-48bf-8454-4f3c2520ae2f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tqWHrqvymdXTvqST",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_2956898318479726024"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        620,
+        -500
+      ],
+      "id": "541cdc04-e0fd-4139-bb6c-bf014be4fa2e",
+      "name": "Gmail1",
+      "webhookId": "2e7d5a9e-9c81-4a2f-89f7-2064c94d23a7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tqWHrqvymdXTvqST",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_7684692799160484241"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        620,
+        300
+      ],
+      "id": "42a21afd-6337-4d5b-863f-a1adbad3f577",
+      "name": "Gmail2",
+      "webhookId": "da03fa29-b4e5-4169-8fc3-22176650cadc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tqWHrqvymdXTvqST",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_6521801338557458908"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        740
+      ],
+      "id": "e2525698-ebe6-4774-ac95-4805e683952a",
+      "name": "Gmail3",
+      "webhookId": "ba28a503-1455-47ae-a54b-7347aaea25df",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tqWHrqvymdXTvqST",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        220,
+        220
+      ],
+      "id": "d290cf09-bd5d-4abf-b449-96aa9429a4fe",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4HZQoBryv5APihIx",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un asistente util. Tu tarea principal es resopnder correos en mi lugar.\nResponde de manera muy casual pero con tono profesional.\nPuedes mencionar el nombre del remitente al responder.\nNo firmes el correo con mi nombre.\n\n---\nEjemplo 1:\nFragmento del Correo: \"Hola, Solo quería saber si hay novedades sobre el informe. Gracias, Ben\" Remitente: \"Ben\"\n---\nHola Ben,\n\nSí, estoy finalizando los últimos detalles. Te lo envío antes del final del día.\n---\nEjemplo 3: Fragmento del correo: \"Gabriel, Van a pasar una buena película con 50% de descuento el próximo jueves. ¿Quieres ir con Jane y conmigo? Saludos, Sarah\"\nRemitente: \"Sarah\"\n---\nHola Sarah,\n\n¡Suena divertido! El jueves me viene bien. Avísame la hora y veo si Jane también puede. ¡50% de descuento es una ganga!\n---\nTu tarea secundaria es identificar y extraer todos los posibles eventos de calendario del contenido del correo. Para cada evento, extrae: `date`, `time`, `location` (si se menciona explicitamente, de lo contrario no incluir), y `event_description` tendra un breve resumen del proposito del evento. Si no encuentras eventos, el arreglo `calendar_events` debera estar vacio.\n\nTu salida FINAL debe ser un objeto JSON con dos claves de nivel superior:\n- \"email_response\": [string] La respuesta generada al correo.\n- \"calendar_events\": [array of objects] Cada objeto representa un evento identificado con las claves: \"date\", \"time\", \"location\", \"event_description\".\n\nDebes mostrar ÚNICAMENTE el objeto JSON. No incluyas ningún otro texto o formato adicional fuera del JSON.\n---\nCurrent Email:\nEmail Snippet: \"{{ $json.snippet }}\"\nEmail Text: \"{{ $('Gmail Trigger').item.json.text }}\"\nEmail Sender: \"{{ $('Gmail Trigger').item.json.from.value[0].address }}\"\nEmail Thread ID: \"{{ $json.threadId }}\"\n---\nDebes mostrar ÚNICAMENTE el objeto JSON. No incluyas ningún otro texto ni formato adicional fuera del JSON.",
+        "hasOutputParser": true,
+        "options": {
+          "returnIntermediateSteps": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -700
+      ],
+      "id": "d5bf4e60-dc00-424b-8401-295d0f8d0331",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "message": "={{ $json.email_response }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1440,
+        -780
+      ],
+      "id": "fd8ceab0-9664-481a-8eab-531f94570c36",
+      "name": "Gmail11",
+      "webhookId": "b518491b-0fb5-40ce-a74b-11efaf127852",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tqWHrqvymdXTvqST",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "prompt": "Instructions:\n--------------\nYour task is to correct and extract a single, valid JSON object from the provided text.\nThis JSON object must strictly follow the schema below, containing \"email_response\" (string) and \"calendar_events\" (array of objects). Each object in \"calendar_events\" must have \"date\" (string), \"time\" (string), \"location\" (string), and \"event_description\" (string).\nRemove any surrounding markdown code fences (like ```json or ```) or any other extraneous text. Output ONLY the JSON.\n\nExpected JSON structure description: A JSON object with a key \"email_response\" containing a string, and a key \"calendar_events\" containing an array. Each item in the \"calendar_events\" array should be an object with string values for \"date\", \"time\", \"location\", and \"event_description\".\n--------------\nCompletion:\n--------------\n{completion}\n--------------\n\nAbove, the Completion did not satisfy the constraints given in the Instructions.\nError:\n--------------\n{error}\n--------------\n\nPlease try again. Your response must strictly satisfy the constraints laid out in the Instructions and be ONLY the JSON object."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+      "typeVersion": 1,
+      "position": [
+        960,
+        -520
+      ],
+      "id": "71e3f0cc-88d1-4248-93d0-f6390d3f90ca",
+      "name": "Auto-fixing Output Parser3"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"email_response\": \"...\",\n  \"calendar_events\": [\n    {\n      \"date\": \"...\",\n      \"time\": \"...\",\n      \"location\": \"...\",\n      \"event_description\": \"...\"\n    }\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1040,
+        -400
+      ],
+      "id": "bcea13e9-bc36-4ab2-bd2f-f6f20706a293",
+      "name": "Structured Output Parser3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.output || {};\nconst response = data.email_response || '';\nconst events = Array.isArray(data.calendar_events) ? data.calendar_events : (data.calendar_events ? [data.calendar_events] : []);\n\nconst pad = (n) => String(n).padStart(2, '0');\n\nfunction toRFC3339WithOffset(dateObj, offset = '-05:00') {\n  return (\n    `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}T` +\n    `${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:${pad(dateObj.getSeconds())}${offset}`\n  );\n}\n\nfunction parseDateString(dateStr) {\n  if (!dateStr) return { year: -1, month: -1, day: -1 };\n\n  const isoMatch = dateStr.match(/^(\\d{4})-(\\d{2})-(\\d{2})$/);\n  if (isoMatch) {\n    const [ , _year, month, day ] = isoMatch; // underscore to indicate unused\n    return {\n      year: new Date().getFullYear(), // force current year\n      month: parseInt(month, 10) - 1,\n      day: parseInt(day, 10)\n    };\n  }\n\n\n  // Spanish-style: e.g. \"martes 1 de julio\" or \"1 de julio\"\n  const parts = dateStr.trim().toLowerCase().split(\" \");\n  let dayRaw = '';\n  let monthStr = '';\n\n  if (parts.length === 4) {\n    dayRaw = parts[1];\n    monthStr = parts[3];\n  } else if (parts.length === 3) {\n    dayRaw = parts[0];\n    monthStr = parts[2];\n  } else {\n    return { year: -1, month: -1, day: -1 };\n  }\n\n  const day = parseInt(dayRaw.replace(/[^0-9]/g, '') || '');\n  const monthNames = [\n    \"enero\", \"febrero\", \"marzo\", \"abril\", \"mayo\", \"junio\",\n    \"julio\", \"agosto\", \"septiembre\", \"octubre\", \"noviembre\", \"diciembre\"\n  ];\n  const monthIndex = monthNames.indexOf(monthStr);\n  return {\n    year: new Date().getFullYear(),\n    month: monthIndex,\n    day\n  };\n}\n\n\nfunction parseTimeString(timeStr) {\n  if (!timeStr) return null;\n\n  const clean = timeStr.trim().toLowerCase();\n\n  // 12-hour format with AM/PM\n  let match = clean.match(/^(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)$/);\n  if (match) {\n    let [ , hour, minute, period ] = match;\n    hour = parseInt(hour, 10);\n    minute = parseInt(minute || '0', 10);\n\n    if (period === 'pm' && hour < 12) hour += 12;\n    if (period === 'am' && hour === 12) hour = 0;\n\n    return { hour, minute };\n  }\n\n  // 24-hour format with seconds (e.g., \"17:00:00\")\n  match = clean.match(/^(\\d{1,2}):(\\d{2}):(\\d{2})$/);\n  if (match) {\n    return {\n      hour: parseInt(match[1], 10),\n      minute: parseInt(match[2], 10),\n    };\n  }\n\n  // Standard 24-hour format (e.g., \"16:00\")\n  match = clean.match(/^(\\d{1,2}):(\\d{2})$/);\n  if (match) {\n    return {\n      hour: parseInt(match[1], 10),\n      minute: parseInt(match[2], 10),\n    };\n  }\n\n  // Single hour only (e.g., \"9\", \"16\")\n  match = clean.match(/^(\\d{1,2})$/);\n  if (match) {\n    return {\n      hour: parseInt(match[1], 10),\n      minute: 0,\n    };\n  }\n\n  return null; // Unrecognized format\n}\n\n\n\nfunction subtractHours(dateObj, hours) {\n  return new Date(dateObj.getTime() - hours * 60 * 60 * 1000);\n}\n\nfunction parseEventDateTime(dateStr, timeStr) {\n  if (!dateStr || !timeStr) return { start: null, end: null };\n\n  const { year, month, day } = parseDateString(dateStr);\n  if (month < 0 || day < 0) return { start: null, end: null };\n\n  // Check if it's a range\n  const connectors = [\" a \", \" a las \", \"–\", \"-\"];\n  let connector = connectors.find(c => timeStr.includes(c));\n\n  if (connector) {\n    const [startTimeRaw, endTimeRaw] = timeStr.toLowerCase().split(connector).map(s => s.trim());\n    const start = parseTimeString(startTimeRaw);\n    const end = parseTimeString(endTimeRaw);\n\n    if (!start || !end) return { start: null, end: null };\n\n    let startDateTime = new Date(year, month, day, start.hour, start.minute);\n    let endDateTime = new Date(year, month, day, end.hour, end.minute);\n\n    startDateTime = subtractHours(startDateTime, 5);\n    endDateTime = subtractHours(endDateTime, 5);\n\n    return {\n      start: toRFC3339WithOffset(startDateTime),\n      end: toRFC3339WithOffset(endDateTime)\n    };\n  } else {\n    // Treat as single time — start and end are the same\n    const single = parseTimeString(timeStr.trim().toLowerCase());\n    if (!single) return { start: null, end: null };\n\n    let singleDateTime = new Date(year, month, day, single.hour, single.minute);\n    singleDateTime = subtractHours(singleDateTime, 5);\n    const rfc = toRFC3339WithOffset(singleDateTime);\n\n    return {\n      start: rfc,\n      end: rfc\n    };\n  }\n}\n\n\n// Handle the case where there are no events\nif (events.length === 0) {\n  return [\n    {\n      json: {\n        email_response: response,\n        calendar_event: null\n      }\n    }\n  ];\n}\n\n// Otherwise, return transformed events\nreturn events.map(event => {\n  const eventData = event || {};\n  const { start, end } = parseEventDateTime(eventData.date, eventData.time);\n\n  return {\n    json: {\n      email_response: response,\n      calendar_event: {\n        summary: eventData.event_description || \"Invalid title\",\n        location: eventData.location || \"Invalid location\",\n        start_time: start || \"Invalid start time\",\n        end_time: end || \"Invalid end time\"\n      }\n    }\n  };\n});\n\n\n\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        -700
+      ],
+      "id": "1d99fcdc-b868-4d2d-8a22-208fdc806c23",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "gabriel.puga@tamaulipas.gob.mx",
+          "mode": "list",
+          "cachedResultName": "gabriel.puga@tamaulipas.gob.mx"
+        },
+        "start": "={{ $('Code3').item.json.calendar_event.start_time }}",
+        "end": "={{ $('Code3').item.json.calendar_event.end_time }}",
+        "additionalFields": {
+          "description": "={{ $('Code3').item.json.calendar_event.summary }}",
+          "location": "={{ $('Code3').item.json.calendar_event.location }}",
+          "showMeAs": "opaque",
+          "summary": "={{ $('Gmail Trigger').item.json.headers.subject }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        1660,
+        -600
+      ],
+      "id": "64f30c02-8778-48c3-a8cc-935d4844aa45",
+      "name": "Google Calendar3",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ulYQMGlm4tupfvrs",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "250e2c64-d509-4c9a-bb5c-7cb3863ab35a",
+              "leftValue": "={{ $json.calendar_event }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "5740ae9f-131a-4309-85cb-eb9b65910a0f",
+              "leftValue": "={{ $json.calendar_event.summary }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "4febeb2f-58d6-4bb4-9287-e7023a535e34",
+              "leftValue": "={{ $json.calendar_event.location }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "ca7d9df3-3d1c-4d67-8309-df631551e4c8",
+              "leftValue": "={{ $json.calendar_event.start_time }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "37863770-98e6-47bc-a1a3-06b4952bc4f3",
+              "leftValue": "={{ $json.calendar_event.end_time }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        -580
+      ],
+      "id": "0a3df8a3-f6de-4f70-8906-031e387af1d6",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "model": "codestral-2501",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        840,
+        -520
+      ],
+      "id": "1d14d3b5-e85d-47b6-990d-67ac0dcc10d5",
+      "name": "Mistral Cloud Chat Model3",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "wzTriTqnmtEkfUv7",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "pixtral-12b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        920,
+        -400
+      ],
+      "id": "9044589b-cad6-4e49-86ba-1510bec129f3",
+      "name": "Mistral Cloud Chat Model10",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "wzTriTqnmtEkfUv7",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un asistente util. Tu tarea principal es resopnder correos en mi lugar.\nResponde de manera muy casual pero con tono profesional.\nPuedes mencionar el nombre del remitente al responder.\nNo firmes el correo con mi nombre.\n\n---\nEjemplo 1:\nFragmento del Correo: \"Hola, Solo quería saber si hay novedades sobre el informe. Gracias, Ben\" Remitente: \"Ben\"\n---\nHola Ben,\n\nSí, estoy finalizando los últimos detalles. Te lo envío antes del final del día.\n---\nEjemplo 3: Fragmento del correo: \"Gabriel, Van a pasar una buena película con 50% de descuento el próximo jueves. ¿Quieres ir con Jane y conmigo? Saludos, Sarah\"\nRemitente: \"Sarah\"\n---\nHola Sarah,\n\n¡Suena divertido! El jueves me viene bien. Avísame la hora y veo si Jane también puede. ¡50% de descuento es una ganga!\n---\nTu tarea secundaria es identificar y extraer todos los posibles eventos de calendario del contenido del correo. Para cada evento, extrae: `date`, `time`, `location` (si se menciona explicitamente, de lo contrario no incluir), y `event_description` tendra un breve resumen del proposito del evento. Si no encuentras eventos, el arreglo `calendar_events` debera estar vacio.\n\nTu salida FINAL debe ser un objeto JSON con dos claves de nivel superior:\n- \"email_response\": [string] La respuesta generada al correo.\n- \"calendar_events\": [array of objects] Cada objeto representa un evento identificado con las claves: \"date\", \"time\", \"location\", \"event_description\".\n\nDebes mostrar ÚNICAMENTE el objeto JSON. No incluyas ningún otro texto o formato adicional fuera del JSON.\n---\nCurrent Email:\nEmail Snippet: \"{{ $json.snippet }}\"\nEmail Text: \"{{ $('Gmail Trigger').item.json.text }}\"\nEmail Sender: \"{{ $('Gmail Trigger').item.json.from.value[0].address }}\"\nEmail Thread ID: \"{{ $json.threadId }}\"\n---\nDebes mostrar ÚNICAMENTE el objeto JSON. No incluyas ningún otro texto ni formato adicional fuera del JSON.",
+        "hasOutputParser": true,
+        "options": {
+          "returnIntermediateSteps": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -240
+      ],
+      "id": "2eec9822-f896-419d-a7b2-9ba5b49b3391",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "message": "={{ $json.email_response }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1440,
+        -320
+      ],
+      "id": "6ff1edd9-9086-4208-8903-f7a728948513",
+      "name": "Gmail12",
+      "webhookId": "b518491b-0fb5-40ce-a74b-11efaf127852",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tqWHrqvymdXTvqST",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "prompt": "Instructions:\n--------------\nYour task is to correct and extract a single, valid JSON object from the provided text.\nThis JSON object must strictly follow the schema below, containing \"email_response\" (string) and \"calendar_events\" (array of objects). Each object in \"calendar_events\" must have \"date\" (string), \"time\" (string), \"location\" (string), and \"event_description\" (string).\nRemove any surrounding markdown code fences (like ```json or ```) or any other extraneous text. Output ONLY the JSON.\n\nExpected JSON structure description: A JSON object with a key \"email_response\" containing a string, and a key \"calendar_events\" containing an array. Each item in the \"calendar_events\" array should be an object with string values for \"date\", \"time\", \"location\", and \"event_description\".\n--------------\nCompletion:\n--------------\n{completion}\n--------------\n\nAbove, the Completion did not satisfy the constraints given in the Instructions.\nError:\n--------------\n{error}\n--------------\n\nPlease try again. Your response must strictly satisfy the constraints laid out in the Instructions and be ONLY the JSON object."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+      "typeVersion": 1,
+      "position": [
+        960,
+        -60
+      ],
+      "id": "180f4e37-0431-4b44-8fe2-242c9aba9382",
+      "name": "Auto-fixing Output Parser"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"email_response\": \"...\",\n  \"calendar_events\": [\n    {\n      \"date\": \"...\",\n      \"time\": \"...\",\n      \"location\": \"...\",\n      \"event_description\": \"...\"\n    }\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1040,
+        60
+      ],
+      "id": "c771ab2c-642b-459b-afc3-ee627e1e829f",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.output || {};\nconst response = data.email_response || '';\nconst events = Array.isArray(data.calendar_events) ? data.calendar_events : (data.calendar_events ? [data.calendar_events] : []);\n\nconst pad = (n) => String(n).padStart(2, '0');\n\nfunction toRFC3339WithOffset(dateObj, offset = '-05:00') {\n  return (\n    `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}T` +\n    `${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:${pad(dateObj.getSeconds())}${offset}`\n  );\n}\n\nfunction parseDateString(dateStr) {\n  if (!dateStr) return { year: -1, month: -1, day: -1 };\n\n  const isoMatch = dateStr.match(/^(\\d{4})-(\\d{2})-(\\d{2})$/);\n  if (isoMatch) {\n    const [ , _year, month, day ] = isoMatch; // underscore to indicate unused\n    return {\n      year: new Date().getFullYear(), // force current year\n      month: parseInt(month, 10) - 1,\n      day: parseInt(day, 10)\n    };\n  }\n\n\n  // Spanish-style: e.g. \"martes 1 de julio\" or \"1 de julio\"\n  const parts = dateStr.trim().toLowerCase().split(\" \");\n  let dayRaw = '';\n  let monthStr = '';\n\n  if (parts.length === 4) {\n    dayRaw = parts[1];\n    monthStr = parts[3];\n  } else if (parts.length === 3) {\n    dayRaw = parts[0];\n    monthStr = parts[2];\n  } else {\n    return { year: -1, month: -1, day: -1 };\n  }\n\n  const day = parseInt(dayRaw.replace(/[^0-9]/g, '') || '');\n  const monthNames = [\n    \"enero\", \"febrero\", \"marzo\", \"abril\", \"mayo\", \"junio\",\n    \"julio\", \"agosto\", \"septiembre\", \"octubre\", \"noviembre\", \"diciembre\"\n  ];\n  const monthIndex = monthNames.indexOf(monthStr);\n  return {\n    year: new Date().getFullYear(),\n    month: monthIndex,\n    day\n  };\n}\n\n\nfunction parseTimeString(timeStr) {\n  if (!timeStr) return null;\n\n  const clean = timeStr.trim().toLowerCase();\n\n  // 12-hour format with AM/PM\n  let match = clean.match(/^(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)$/);\n  if (match) {\n    let [ , hour, minute, period ] = match;\n    hour = parseInt(hour, 10);\n    minute = parseInt(minute || '0', 10);\n\n    if (period === 'pm' && hour < 12) hour += 12;\n    if (period === 'am' && hour === 12) hour = 0;\n\n    return { hour, minute };\n  }\n\n  // 24-hour format with seconds (e.g., \"17:00:00\")\n  match = clean.match(/^(\\d{1,2}):(\\d{2}):(\\d{2})$/);\n  if (match) {\n    return {\n      hour: parseInt(match[1], 10),\n      minute: parseInt(match[2], 10),\n    };\n  }\n\n  // Standard 24-hour format (e.g., \"16:00\")\n  match = clean.match(/^(\\d{1,2}):(\\d{2})$/);\n  if (match) {\n    return {\n      hour: parseInt(match[1], 10),\n      minute: parseInt(match[2], 10),\n    };\n  }\n\n  // Single hour only (e.g., \"9\", \"16\")\n  match = clean.match(/^(\\d{1,2})$/);\n  if (match) {\n    return {\n      hour: parseInt(match[1], 10),\n      minute: 0,\n    };\n  }\n\n  return null; // Unrecognized format\n}\n\n\n\nfunction subtractHours(dateObj, hours) {\n  return new Date(dateObj.getTime() - hours * 60 * 60 * 1000);\n}\n\nfunction parseEventDateTime(dateStr, timeStr) {\n  if (!dateStr || !timeStr) return { start: null, end: null };\n\n  const { year, month, day } = parseDateString(dateStr);\n  if (month < 0 || day < 0) return { start: null, end: null };\n\n  // Check if it's a range\n  const connectors = [\" a \", \" a las \", \"–\", \"-\"];\n  let connector = connectors.find(c => timeStr.includes(c));\n\n  if (connector) {\n    const [startTimeRaw, endTimeRaw] = timeStr.toLowerCase().split(connector).map(s => s.trim());\n    const start = parseTimeString(startTimeRaw);\n    const end = parseTimeString(endTimeRaw);\n\n    if (!start || !end) return { start: null, end: null };\n\n    let startDateTime = new Date(year, month, day, start.hour, start.minute);\n    let endDateTime = new Date(year, month, day, end.hour, end.minute);\n\n    startDateTime = subtractHours(startDateTime, 5);\n    endDateTime = subtractHours(endDateTime, 5);\n\n    return {\n      start: toRFC3339WithOffset(startDateTime),\n      end: toRFC3339WithOffset(endDateTime)\n    };\n  } else {\n    // Treat as single time — start and end are the same\n    const single = parseTimeString(timeStr.trim().toLowerCase());\n    if (!single) return { start: null, end: null };\n\n    let singleDateTime = new Date(year, month, day, single.hour, single.minute);\n    singleDateTime = subtractHours(singleDateTime, 5);\n    const rfc = toRFC3339WithOffset(singleDateTime);\n\n    return {\n      start: rfc,\n      end: rfc\n    };\n  }\n}\n\n\n// Handle the case where there are no events\nif (events.length === 0) {\n  return [\n    {\n      json: {\n        email_response: response,\n        calendar_event: null\n      }\n    }\n  ];\n}\n\n// Otherwise, return transformed events\nreturn events.map(event => {\n  const eventData = event || {};\n  const { start, end } = parseEventDateTime(eventData.date, eventData.time);\n\n  return {\n    json: {\n      email_response: response,\n      calendar_event: {\n        summary: eventData.event_description || \"Invalid title\",\n        location: eventData.location || \"Invalid location\",\n        start_time: start || \"Invalid start time\",\n        end_time: end || \"Invalid end time\"\n      }\n    }\n  };\n});\n\n\n\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        -240
+      ],
+      "id": "b8016df6-9b10-4176-a3f6-4465b4770f18",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "gabriel.puga@tamaulipas.gob.mx",
+          "mode": "list",
+          "cachedResultName": "gabriel.puga@tamaulipas.gob.mx"
+        },
+        "start": "={{ $('Code').item.json.calendar_event.start_time }}",
+        "end": "={{ $('Code').item.json.calendar_event.end_time }}",
+        "additionalFields": {
+          "description": "={{ $('Code').item.json.calendar_event.summary }}",
+          "location": "={{ $('Code').item.json.calendar_event.location }}",
+          "showMeAs": "opaque",
+          "summary": "={{ $('Gmail Trigger').item.json.headers.subject }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        1660,
+        -140
+      ],
+      "id": "7c2d500b-2357-473c-9403-8ccb0a10813b",
+      "name": "Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ulYQMGlm4tupfvrs",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "250e2c64-d509-4c9a-bb5c-7cb3863ab35a",
+              "leftValue": "={{ $json.calendar_event }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "5740ae9f-131a-4309-85cb-eb9b65910a0f",
+              "leftValue": "={{ $json.calendar_event.summary }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "4febeb2f-58d6-4bb4-9287-e7023a535e34",
+              "leftValue": "={{ $json.calendar_event.location }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "ca7d9df3-3d1c-4d67-8309-df631551e4c8",
+              "leftValue": "={{ $json.calendar_event.start_time }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "37863770-98e6-47bc-a1a3-06b4952bc4f3",
+              "leftValue": "={{ $json.calendar_event.end_time }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        -120
+      ],
+      "id": "7bae6b9c-6e36-4133-9003-7b064cbd8148",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "model": "codestral-2501",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        840,
+        -60
+      ],
+      "id": "d21894b6-5ab3-4117-8d38-a667257541c9",
+      "name": "Mistral Cloud Chat Model",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "wzTriTqnmtEkfUv7",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "pixtral-12b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        920,
+        60
+      ],
+      "id": "46fa5f12-f433-4631-8bb6-1c00a18eee16",
+      "name": "Mistral Cloud Chat Model11",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "wzTriTqnmtEkfUv7",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un asistente util. Tu tarea principal es resopnder correos en mi lugar.\nResponde de manera muy casual pero con tono profesional.\nPuedes mencionar el nombre del remitente al responder.\nNo firmes el correo con mi nombre.\n\n---\nEjemplo 1:\nFragmento del Correo: \"Hola, Solo quería saber si hay novedades sobre el informe. Gracias, Ben\" Remitente: \"Ben\"\n---\nHola Ben,\n\nSí, estoy finalizando los últimos detalles. Te lo envío antes del final del día.\n---\nEjemplo 3: Fragmento del correo: \"Gabriel, Van a pasar una buena película con 50% de descuento el próximo jueves. ¿Quieres ir con Jane y conmigo? Saludos, Sarah\"\nRemitente: \"Sarah\"\n---\nHola Sarah,\n\n¡Suena divertido! El jueves me viene bien. Avísame la hora y veo si Jane también puede. ¡50% de descuento es una ganga!\n---\nTu tarea secundaria es identificar y extraer todos los posibles eventos de calendario del contenido del correo. Para cada evento, extrae: `date`, `time`, `location` (si se menciona explicitamente, de lo contrario no incluir), y `event_description` tendra un breve resumen del proposito del evento. Si no encuentras eventos, el arreglo `calendar_events` debera estar vacio.\n\nTu salida FINAL debe ser un objeto JSON con dos claves de nivel superior:\n- \"email_response\": [string] La respuesta generada al correo.\n- \"calendar_events\": [array of objects] Cada objeto representa un evento identificado con las claves: \"date\", \"time\", \"location\", \"event_description\".\n\nDebes mostrar ÚNICAMENTE el objeto JSON. No incluyas ningún otro texto o formato adicional fuera del JSON.\n---\nCurrent Email:\nEmail Snippet: \"{{ $json.snippet }}\"\nEmail Text: \"{{ $('Gmail Trigger').item.json.text }}\"\nEmail Sender: \"{{ $('Gmail Trigger').item.json.from.value[0].address }}\"\nEmail Thread ID: \"{{ $json.threadId }}\"\n---\nDebes mostrar ÚNICAMENTE el objeto JSON. No incluyas ningún otro texto ni formato adicional fuera del JSON.",
+        "hasOutputParser": true,
+        "options": {
+          "returnIntermediateSteps": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        860,
+        240
+      ],
+      "id": "79707543-ffe5-4923-8be0-010093890d07",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "message": "={{ $json.email_response }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1420,
+        160
+      ],
+      "id": "8ef8caba-19cb-4fca-8b56-921ee1c34531",
+      "name": "Gmail13",
+      "webhookId": "b518491b-0fb5-40ce-a74b-11efaf127852",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tqWHrqvymdXTvqST",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "prompt": "Instructions:\n--------------\nYour task is to correct and extract a single, valid JSON object from the provided text.\nThis JSON object must strictly follow the schema below, containing \"email_response\" (string) and \"calendar_events\" (array of objects). Each object in \"calendar_events\" must have \"date\" (string), \"time\" (string), \"location\" (string), and \"event_description\" (string).\nRemove any surrounding markdown code fences (like ```json or ```) or any other extraneous text. Output ONLY the JSON.\n\nExpected JSON structure description: A JSON object with a key \"email_response\" containing a string, and a key \"calendar_events\" containing an array. Each item in the \"calendar_events\" array should be an object with string values for \"date\", \"time\", \"location\", and \"event_description\".\n--------------\nCompletion:\n--------------\n{completion}\n--------------\n\nAbove, the Completion did not satisfy the constraints given in the Instructions.\nError:\n--------------\n{error}\n--------------\n\nPlease try again. Your response must strictly satisfy the constraints laid out in the Instructions and be ONLY the JSON object."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+      "typeVersion": 1,
+      "position": [
+        940,
+        420
+      ],
+      "id": "68d7dc2d-b7d7-436b-867d-edd63d150d70",
+      "name": "Auto-fixing Output Parser1"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"email_response\": \"...\",\n  \"calendar_events\": [\n    {\n      \"date\": \"...\",\n      \"time\": \"...\",\n      \"location\": \"...\",\n      \"event_description\": \"...\"\n    }\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1020,
+        540
+      ],
+      "id": "61512f67-f02d-42d2-a95d-e42884f4d5e6",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.output || {};\nconst response = data.email_response || '';\nconst events = Array.isArray(data.calendar_events) ? data.calendar_events : (data.calendar_events ? [data.calendar_events] : []);\n\nconst pad = (n) => String(n).padStart(2, '0');\n\nfunction toRFC3339WithOffset(dateObj, offset = '-05:00') {\n  return (\n    `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}T` +\n    `${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:${pad(dateObj.getSeconds())}${offset}`\n  );\n}\n\nfunction parseDateString(dateStr) {\n  if (!dateStr) return { year: -1, month: -1, day: -1 };\n\n  const isoMatch = dateStr.match(/^(\\d{4})-(\\d{2})-(\\d{2})$/);\n  if (isoMatch) {\n    const [ , _year, month, day ] = isoMatch; // underscore to indicate unused\n    return {\n      year: new Date().getFullYear(), // force current year\n      month: parseInt(month, 10) - 1,\n      day: parseInt(day, 10)\n    };\n  }\n\n\n  // Spanish-style: e.g. \"martes 1 de julio\" or \"1 de julio\"\n  const parts = dateStr.trim().toLowerCase().split(\" \");\n  let dayRaw = '';\n  let monthStr = '';\n\n  if (parts.length === 4) {\n    dayRaw = parts[1];\n    monthStr = parts[3];\n  } else if (parts.length === 3) {\n    dayRaw = parts[0];\n    monthStr = parts[2];\n  } else {\n    return { year: -1, month: -1, day: -1 };\n  }\n\n  const day = parseInt(dayRaw.replace(/[^0-9]/g, '') || '');\n  const monthNames = [\n    \"enero\", \"febrero\", \"marzo\", \"abril\", \"mayo\", \"junio\",\n    \"julio\", \"agosto\", \"septiembre\", \"octubre\", \"noviembre\", \"diciembre\"\n  ];\n  const monthIndex = monthNames.indexOf(monthStr);\n  return {\n    year: new Date().getFullYear(),\n    month: monthIndex,\n    day\n  };\n}\n\n\nfunction parseTimeString(timeStr) {\n  if (!timeStr) return null;\n\n  const clean = timeStr.trim().toLowerCase();\n\n  // 12-hour format with AM/PM\n  let match = clean.match(/^(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)$/);\n  if (match) {\n    let [ , hour, minute, period ] = match;\n    hour = parseInt(hour, 10);\n    minute = parseInt(minute || '0', 10);\n\n    if (period === 'pm' && hour < 12) hour += 12;\n    if (period === 'am' && hour === 12) hour = 0;\n\n    return { hour, minute };\n  }\n\n  // 24-hour format with seconds (e.g., \"17:00:00\")\n  match = clean.match(/^(\\d{1,2}):(\\d{2}):(\\d{2})$/);\n  if (match) {\n    return {\n      hour: parseInt(match[1], 10),\n      minute: parseInt(match[2], 10),\n    };\n  }\n\n  // Standard 24-hour format (e.g., \"16:00\")\n  match = clean.match(/^(\\d{1,2}):(\\d{2})$/);\n  if (match) {\n    return {\n      hour: parseInt(match[1], 10),\n      minute: parseInt(match[2], 10),\n    };\n  }\n\n  // Single hour only (e.g., \"9\", \"16\")\n  match = clean.match(/^(\\d{1,2})$/);\n  if (match) {\n    return {\n      hour: parseInt(match[1], 10),\n      minute: 0,\n    };\n  }\n\n  return null; // Unrecognized format\n}\n\n\n\nfunction subtractHours(dateObj, hours) {\n  return new Date(dateObj.getTime() - hours * 60 * 60 * 1000);\n}\n\nfunction parseEventDateTime(dateStr, timeStr) {\n  if (!dateStr || !timeStr) return { start: null, end: null };\n\n  const { year, month, day } = parseDateString(dateStr);\n  if (month < 0 || day < 0) return { start: null, end: null };\n\n  // Check if it's a range\n  const connectors = [\" a \", \" a las \", \"–\", \"-\"];\n  let connector = connectors.find(c => timeStr.includes(c));\n\n  if (connector) {\n    const [startTimeRaw, endTimeRaw] = timeStr.toLowerCase().split(connector).map(s => s.trim());\n    const start = parseTimeString(startTimeRaw);\n    const end = parseTimeString(endTimeRaw);\n\n    if (!start || !end) return { start: null, end: null };\n\n    let startDateTime = new Date(year, month, day, start.hour, start.minute);\n    let endDateTime = new Date(year, month, day, end.hour, end.minute);\n\n    startDateTime = subtractHours(startDateTime, 5);\n    endDateTime = subtractHours(endDateTime, 5);\n\n    return {\n      start: toRFC3339WithOffset(startDateTime),\n      end: toRFC3339WithOffset(endDateTime)\n    };\n  } else {\n    // Treat as single time — start and end are the same\n    const single = parseTimeString(timeStr.trim().toLowerCase());\n    if (!single) return { start: null, end: null };\n\n    let singleDateTime = new Date(year, month, day, single.hour, single.minute);\n    singleDateTime = subtractHours(singleDateTime, 5);\n    const rfc = toRFC3339WithOffset(singleDateTime);\n\n    return {\n      start: rfc,\n      end: rfc\n    };\n  }\n}\n\n\n// Handle the case where there are no events\nif (events.length === 0) {\n  return [\n    {\n      json: {\n        email_response: response,\n        calendar_event: null\n      }\n    }\n  ];\n}\n\n// Otherwise, return transformed events\nreturn events.map(event => {\n  const eventData = event || {};\n  const { start, end } = parseEventDateTime(eventData.date, eventData.time);\n\n  return {\n    json: {\n      email_response: response,\n      calendar_event: {\n        summary: eventData.event_description || \"Invalid title\",\n        location: eventData.location || \"Invalid location\",\n        start_time: start || \"Invalid start time\",\n        end_time: end || \"Invalid end time\"\n      }\n    }\n  };\n});\n\n\n\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        240
+      ],
+      "id": "172dddf9-40de-4cf3-b603-d61a2ca9c5ae",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "gabriel.puga@tamaulipas.gob.mx",
+          "mode": "list",
+          "cachedResultName": "gabriel.puga@tamaulipas.gob.mx"
+        },
+        "start": "={{ $('Code1').item.json.calendar_event.start_time }}",
+        "end": "={{ $('Code1').item.json.calendar_event.end_time }}",
+        "additionalFields": {
+          "description": "={{ $('Code1').item.json.calendar_event.summary }}",
+          "location": "={{ $('Code1').item.json.calendar_event.location }}",
+          "showMeAs": "opaque",
+          "summary": "={{ $('Gmail Trigger').item.json.headers.subject }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        1640,
+        340
+      ],
+      "id": "a0449cca-aed5-4775-b9f1-51e823502c9f",
+      "name": "Google Calendar1",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ulYQMGlm4tupfvrs",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "250e2c64-d509-4c9a-bb5c-7cb3863ab35a",
+              "leftValue": "={{ $json.calendar_event }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "5740ae9f-131a-4309-85cb-eb9b65910a0f",
+              "leftValue": "={{ $json.calendar_event.summary }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "4febeb2f-58d6-4bb4-9287-e7023a535e34",
+              "leftValue": "={{ $json.calendar_event.location }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "ca7d9df3-3d1c-4d67-8309-df631551e4c8",
+              "leftValue": "={{ $json.calendar_event.start_time }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "37863770-98e6-47bc-a1a3-06b4952bc4f3",
+              "leftValue": "={{ $json.calendar_event.end_time }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1420,
+        360
+      ],
+      "id": "c831922f-8611-44c7-a696-ceed41ba154c",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "model": "codestral-2501",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        820,
+        420
+      ],
+      "id": "dd84fc8a-59c6-4477-b8f8-c28a6d36978d",
+      "name": "Mistral Cloud Chat Model1",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "wzTriTqnmtEkfUv7",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "pixtral-12b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        900,
+        540
+      ],
+      "id": "58612344-df85-466b-a9a0-4c63820185e2",
+      "name": "Mistral Cloud Chat Model12",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "wzTriTqnmtEkfUv7",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un asistente util. Tu tarea principal es resopnder correos en mi lugar.\nResponde de manera muy casual pero con tono profesional.\nPuedes mencionar el nombre del remitente al responder.\nNo firmes el correo con mi nombre.\n\n---\nEjemplo 1:\nFragmento del Correo: \"Hola, Solo quería saber si hay novedades sobre el informe. Gracias, Ben\" Remitente: \"Ben\"\n---\nHola Ben,\n\nSí, estoy finalizando los últimos detalles. Te lo envío antes del final del día.\n---\nEjemplo 3: Fragmento del correo: \"Gabriel, Van a pasar una buena película con 50% de descuento el próximo jueves. ¿Quieres ir con Jane y conmigo? Saludos, Sarah\"\nRemitente: \"Sarah\"\n---\nHola Sarah,\n\n¡Suena divertido! El jueves me viene bien. Avísame la hora y veo si Jane también puede. ¡50% de descuento es una ganga!\n---\nTu tarea secundaria es identificar y extraer todos los posibles eventos de calendario del contenido del correo. Para cada evento, extrae: `date`, `time`, `location` (si se menciona explicitamente, de lo contrario no incluir), y `event_description` tendra un breve resumen del proposito del evento. Si no encuentras eventos, el arreglo `calendar_events` debera estar vacio.\n\nTu salida FINAL debe ser un objeto JSON con dos claves de nivel superior:\n- \"email_response\": [string] La respuesta generada al correo.\n- \"calendar_events\": [array of objects] Cada objeto representa un evento identificado con las claves: \"date\", \"time\", \"location\", \"event_description\".\n\nDebes mostrar ÚNICAMENTE el objeto JSON. No incluyas ningún otro texto o formato adicional fuera del JSON.\n---\nCurrent Email:\nEmail Snippet: \"{{ $json.snippet }}\"\nEmail Text: \"{{ $('Gmail Trigger').item.json.text }}\"\nEmail Sender: \"{{ $('Gmail Trigger').item.json.from.value[0].address }}\"\nEmail Thread ID: \"{{ $json.threadId }}\"\n---\nDebes mostrar ÚNICAMENTE el objeto JSON. No incluyas ningún otro texto ni formato adicional fuera del JSON.",
+        "hasOutputParser": true,
+        "options": {
+          "returnIntermediateSteps": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        860,
+        720
+      ],
+      "id": "debb0fb3-2cd2-48da-af28-25d4c7dc667f",
+      "name": "AI Agent3"
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "message": "={{ $json.email_response }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1420,
+        640
+      ],
+      "id": "7d5c63a1-5918-4b6a-8bc7-a6a38773cb50",
+      "name": "Gmail14",
+      "webhookId": "b518491b-0fb5-40ce-a74b-11efaf127852",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tqWHrqvymdXTvqST",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "prompt": "Instructions:\n--------------\nYour task is to correct and extract a single, valid JSON object from the provided text.\nThis JSON object must strictly follow the schema below, containing \"email_response\" (string) and \"calendar_events\" (array of objects). Each object in \"calendar_events\" must have \"date\" (string), \"time\" (string), \"location\" (string), and \"event_description\" (string).\nRemove any surrounding markdown code fences (like ```json or ```) or any other extraneous text. Output ONLY the JSON.\n\nExpected JSON structure description: A JSON object with a key \"email_response\" containing a string, and a key \"calendar_events\" containing an array. Each item in the \"calendar_events\" array should be an object with string values for \"date\", \"time\", \"location\", and \"event_description\".\n--------------\nCompletion:\n--------------\n{completion}\n--------------\n\nAbove, the Completion did not satisfy the constraints given in the Instructions.\nError:\n--------------\n{error}\n--------------\n\nPlease try again. Your response must strictly satisfy the constraints laid out in the Instructions and be ONLY the JSON object."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+      "typeVersion": 1,
+      "position": [
+        940,
+        900
+      ],
+      "id": "9501a998-2b23-48ac-a097-a991e371f71f",
+      "name": "Auto-fixing Output Parser2"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"email_response\": \"...\",\n  \"calendar_events\": [\n    {\n      \"date\": \"...\",\n      \"time\": \"...\",\n      \"location\": \"...\",\n      \"event_description\": \"...\"\n    }\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1020,
+        1020
+      ],
+      "id": "8dd75cd4-e2f8-4532-8956-08d386ba7dab",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.output || {};\nconst response = data.email_response || '';\nconst events = Array.isArray(data.calendar_events) ? data.calendar_events : (data.calendar_events ? [data.calendar_events] : []);\n\nconst pad = (n) => String(n).padStart(2, '0');\n\nfunction toRFC3339WithOffset(dateObj, offset = '-05:00') {\n  return (\n    `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}T` +\n    `${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:${pad(dateObj.getSeconds())}${offset}`\n  );\n}\n\nfunction parseDateString(dateStr) {\n  if (!dateStr) return { year: -1, month: -1, day: -1 };\n\n  const isoMatch = dateStr.match(/^(\\d{4})-(\\d{2})-(\\d{2})$/);\n  if (isoMatch) {\n    const [ , _year, month, day ] = isoMatch; // underscore to indicate unused\n    return {\n      year: new Date().getFullYear(), // force current year\n      month: parseInt(month, 10) - 1,\n      day: parseInt(day, 10)\n    };\n  }\n\n\n  // Spanish-style: e.g. \"martes 1 de julio\" or \"1 de julio\"\n  const parts = dateStr.trim().toLowerCase().split(\" \");\n  let dayRaw = '';\n  let monthStr = '';\n\n  if (parts.length === 4) {\n    dayRaw = parts[1];\n    monthStr = parts[3];\n  } else if (parts.length === 3) {\n    dayRaw = parts[0];\n    monthStr = parts[2];\n  } else {\n    return { year: -1, month: -1, day: -1 };\n  }\n\n  const day = parseInt(dayRaw.replace(/[^0-9]/g, '') || '');\n  const monthNames = [\n    \"enero\", \"febrero\", \"marzo\", \"abril\", \"mayo\", \"junio\",\n    \"julio\", \"agosto\", \"septiembre\", \"octubre\", \"noviembre\", \"diciembre\"\n  ];\n  const monthIndex = monthNames.indexOf(monthStr);\n  return {\n    year: new Date().getFullYear(),\n    month: monthIndex,\n    day\n  };\n}\n\n\nfunction parseTimeString(timeStr) {\n  if (!timeStr) return null;\n\n  const clean = timeStr.trim().toLowerCase();\n\n  // 12-hour format with AM/PM\n  let match = clean.match(/^(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)$/);\n  if (match) {\n    let [ , hour, minute, period ] = match;\n    hour = parseInt(hour, 10);\n    minute = parseInt(minute || '0', 10);\n\n    if (period === 'pm' && hour < 12) hour += 12;\n    if (period === 'am' && hour === 12) hour = 0;\n\n    return { hour, minute };\n  }\n\n  // 24-hour format with seconds (e.g., \"17:00:00\")\n  match = clean.match(/^(\\d{1,2}):(\\d{2}):(\\d{2})$/);\n  if (match) {\n    return {\n      hour: parseInt(match[1], 10),\n      minute: parseInt(match[2], 10),\n    };\n  }\n\n  // Standard 24-hour format (e.g., \"16:00\")\n  match = clean.match(/^(\\d{1,2}):(\\d{2})$/);\n  if (match) {\n    return {\n      hour: parseInt(match[1], 10),\n      minute: parseInt(match[2], 10),\n    };\n  }\n\n  // Single hour only (e.g., \"9\", \"16\")\n  match = clean.match(/^(\\d{1,2})$/);\n  if (match) {\n    return {\n      hour: parseInt(match[1], 10),\n      minute: 0,\n    };\n  }\n\n  return null; // Unrecognized format\n}\n\n\n\nfunction subtractHours(dateObj, hours) {\n  return new Date(dateObj.getTime() - hours * 60 * 60 * 1000);\n}\n\nfunction parseEventDateTime(dateStr, timeStr) {\n  if (!dateStr || !timeStr) return { start: null, end: null };\n\n  const { year, month, day } = parseDateString(dateStr);\n  if (month < 0 || day < 0) return { start: null, end: null };\n\n  // Check if it's a range\n  const connectors = [\" a \", \" a las \", \"–\", \"-\"];\n  let connector = connectors.find(c => timeStr.includes(c));\n\n  if (connector) {\n    const [startTimeRaw, endTimeRaw] = timeStr.toLowerCase().split(connector).map(s => s.trim());\n    const start = parseTimeString(startTimeRaw);\n    const end = parseTimeString(endTimeRaw);\n\n    if (!start || !end) return { start: null, end: null };\n\n    let startDateTime = new Date(year, month, day, start.hour, start.minute);\n    let endDateTime = new Date(year, month, day, end.hour, end.minute);\n\n    startDateTime = subtractHours(startDateTime, 5);\n    endDateTime = subtractHours(endDateTime, 5);\n\n    return {\n      start: toRFC3339WithOffset(startDateTime),\n      end: toRFC3339WithOffset(endDateTime)\n    };\n  } else {\n    // Treat as single time — start and end are the same\n    const single = parseTimeString(timeStr.trim().toLowerCase());\n    if (!single) return { start: null, end: null };\n\n    let singleDateTime = new Date(year, month, day, single.hour, single.minute);\n    singleDateTime = subtractHours(singleDateTime, 5);\n    const rfc = toRFC3339WithOffset(singleDateTime);\n\n    return {\n      start: rfc,\n      end: rfc\n    };\n  }\n}\n\n\n// Handle the case where there are no events\nif (events.length === 0) {\n  return [\n    {\n      json: {\n        email_response: response,\n        calendar_event: null\n      }\n    }\n  ];\n}\n\n// Otherwise, return transformed events\nreturn events.map(event => {\n  const eventData = event || {};\n  const { start, end } = parseEventDateTime(eventData.date, eventData.time);\n\n  return {\n    json: {\n      email_response: response,\n      calendar_event: {\n        summary: eventData.event_description || \"Invalid title\",\n        location: eventData.location || \"Invalid location\",\n        start_time: start || \"Invalid start time\",\n        end_time: end || \"Invalid end time\"\n      }\n    }\n  };\n});\n\n\n\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        720
+      ],
+      "id": "660e6b9e-567b-4225-b553-4639ecb028f2",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "gabriel.puga@tamaulipas.gob.mx",
+          "mode": "list",
+          "cachedResultName": "gabriel.puga@tamaulipas.gob.mx"
+        },
+        "start": "={{ $('Code2').item.json.calendar_event.start_time }}",
+        "end": "={{ $('Code2').item.json.calendar_event.end_time }}",
+        "additionalFields": {
+          "description": "={{ $('Code2').item.json.calendar_event.summary }}",
+          "location": "={{ $('Code2').item.json.calendar_event.location }}",
+          "showMeAs": "opaque",
+          "summary": "={{ $('Gmail Trigger').item.json.headers.subject }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        1640,
+        820
+      ],
+      "id": "a2ca37d7-645d-4869-bf15-730de2801d92",
+      "name": "Google Calendar2",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ulYQMGlm4tupfvrs",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "250e2c64-d509-4c9a-bb5c-7cb3863ab35a",
+              "leftValue": "={{ $json.calendar_event }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "5740ae9f-131a-4309-85cb-eb9b65910a0f",
+              "leftValue": "={{ $json.calendar_event.summary }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "4febeb2f-58d6-4bb4-9287-e7023a535e34",
+              "leftValue": "={{ $json.calendar_event.location }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "ca7d9df3-3d1c-4d67-8309-df631551e4c8",
+              "leftValue": "={{ $json.calendar_event.start_time }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "37863770-98e6-47bc-a1a3-06b4952bc4f3",
+              "leftValue": "={{ $json.calendar_event.end_time }}",
+              "rightValue": "Invalid",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1420,
+        840
+      ],
+      "id": "ed4fb192-44bd-4464-b2c3-54d39af34390",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "model": "codestral-2501",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        820,
+        900
+      ],
+      "id": "36626b13-38df-471b-a23a-c7a30d85762d",
+      "name": "Mistral Cloud Chat Model2",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "wzTriTqnmtEkfUv7",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "pixtral-12b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        900,
+        1020
+      ],
+      "id": "c9e71443-c358-4318-a0ef-711ef6107441",
+      "name": "Mistral Cloud Chat Model13",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "wzTriTqnmtEkfUv7",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Nodo: Text Classifier\n•\tClasifica el correo en una de las siguientes categorías:\n\no\tTrabajo\no\tPersonal\no\tEvento\no\tOtros\n\n•\tBasado en contenido del correo (subject + text)\n•\tRedirige a nodos específicos de etiquetado según categoría",
+        "height": 280,
+        "width": 380
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        140,
+        -440
+      ],
+      "id": "59c47174-3214-4597-8214-5c12ca5b8df6",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "•\tGMail le asigna una etiqueta al correo entrante, segun la clasificacion previa:\no\tTrabajo\no\tPersonal\no\tEvento\no\tOtros\n",
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -740
+      ],
+      "id": "014014eb-d52b-484b-af28-f39ae68fbfc0",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Nodo: AI Agent\n•\tPrompt personalizado con dos objetivos:\no\tRedactar una respuesta al correo en tono casual-profesional\no\tExtraer posibles eventos con los campos: date, time, location, event_description\n•\tEl output es un objeto JSON estructurado\n\n",
+        "height": 140,
+        "width": 380
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        780,
+        -1040
+      ],
+      "id": "63c40985-852f-4575-9a14-d3931d8eddfc",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Parsers:\n•\tAuto-fixing Output Parser: Corrige desviaciones del formato esperado\n•\tStructured Output Parser: Valida estructura contra ejemplo JSON predefinido\n"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -880
+      ],
+      "id": "127c8be3-3752-4dfa-bd5a-ff080fbee404",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "Code (JavaScript)\n•\tConvierte fechas y horas en formato RFC3339 (YYYY-MM-DDTHH:mm:ss±hh:mm)\n•\tLógica de parsing tolerante a formatos:\no\t5pm, 17:00, 17:00:00\no\tRangos como 17:00 - 19:00 o 5pm a 7pm\n•\tSi el tiempo es único, se asume como misma hora de inicio y fin\n•\tAjuste horario: zona UTC−5\n"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        -880
+      ],
+      "id": "91ae9b21-e6b0-4700-b459-2b57f0604bed",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "Nodo: Gmail Trigger\n•\tDisparador por polling cada minuto (mode: everyMinute)\n•\tFuente: buzón Gmail autenticado\n•\tSalida: JSON del correo entrante (incluye asunto, contenido, remitente, id)\n"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        -280
+      ],
+      "id": "e11b9669-3e49-4310-b9ab-9c9035d958ee",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "Nodo: Gmail (Reply)\n•\tEnvía al remitente la respuesta generada por IA\n",
+        "height": 80,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        -880
+      ],
+      "id": "06975285-e27a-45f4-bd9d-3f2f53091f7c",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "Nodo: Google Calendar\n•\tCrea evento sólo si la validación fue exitosa\n",
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        -880
+      ],
+      "id": "38d97976-bb60-4ee4-9a7a-9ab06632c9eb",
+      "name": "Sticky Note7"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail3": {
+      "main": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-fixing Output Parser3": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser3": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Auto-fixing Output Parser3",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Gmail11",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model10": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Auto-fixing Output Parser3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-fixing Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Gmail12",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model11": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-fixing Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Auto-fixing Output Parser1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Gmail13",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model12": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Auto-fixing Output Parser1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent3": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-fixing Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Auto-fixing Output Parser2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Gmail14",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model13": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Auto-fixing Output Parser2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cfa4a74c-95e9-4b58-be8a-2da98c0dd995",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "oKETkePhNw75J2qN",
+  "tags": []
+}
